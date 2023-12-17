@@ -38,3 +38,37 @@ def analyser_commande():
     
     return args
 
+def main():
+    args = analyser_commande()
+
+    # Initialisation des objets Bourse et Portefeuille
+    bourse = Bourse()
+    portefeuille = Portefeuille(bourse, args.portefeuille)
+
+    # Traitement des différentes actions basées sur les arguments de la ligne de commande
+    if args.action == "acheter":
+        # Vérification et achat des titres spécifiés
+        for titre in args.titres:
+            portefeuille.acheter(titre, args.quantité, args.date)
+    elif args.action == "vendre":
+        # Vérification et vente des titres spécifiés
+        for titre in args.titres:
+            portefeuille.vendre(titre, args.quantité, args.date)
+    
+
+    # Gérer l'affichage graphique si demandé
+    if args.graphique:
+        # Code pour générer et afficher le graphique
+        pass
+
+    # Traiter les options de rendement et de volatilité
+    if args.rendement or args.volatilité:
+        # Code pour gérer le rendement et la volatilité
+        pass
+
+    # Traiter les autres options/arguments selon les besoins
+
+if __name__ == "__main__":
+    main()
+
+
