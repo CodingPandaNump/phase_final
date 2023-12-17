@@ -230,23 +230,23 @@ class Portefeuille:
 
         return titres_en_portefeuille
 
-    def valeur_projetee(self, date_future, rendement):
+    def valeur_projetee(self, date_future, rendement, volatilite=0.0):
         """
-    Retourne la valeur projetée du portefeuille à une
-    date future en supposant le ou les rendements spécifiés.
+        Retourne la valeur projetée du portefeuille à une date future en supposant le ou les rendements spécifiés
+        et en tenant compte de la volatilité.
 
-    Args:
-        date_future (datetime.date): La date future pour la projection.
-        rendement (float ou dict): Le rendement annuel. 
-        Peut être un float pour un rendement fixe
-        ou un dictionnaire de rendements associés à des symboles spécifiques.
+        Args:
+            date_future (datetime.date): La date future pour la projection.
+            rendement (float ou dict): Le rendement annuel, soit un float pour un rendement fixe
+                                       ou un dictionnaire de rendements associés à des symboles spécifiques.
+            volatilite (float): Indice de volatilité sur le rendement annuel (par défaut, 0.0).
 
-    Returns:
-        float: La valeur projetée du portefeuille à la date future.
+        Returns:
+            float: La valeur projetée du portefeuille à la date future.
 
-    Raises:
-        ErreurDate: Si la date future est antérieure à la date actuelle.
-    """
+        Raises:
+            ErreurDate: Si la date future est antérieure à la date actuelle.
+        """
         if date_future < date.today():
             raise ErreurDate("La date future est antérieure à la date actuelle.")
 
@@ -262,11 +262,15 @@ class Portefeuille:
                 symbole = trans['symbole']
                 quantite = trans['quantite']
                 prix_actuel = self.bourse.prix(symbole, date_future)
-            if isinstance(rendement, dict):
-                rendement_titre =  rendement.get(symbole, rendement)
-            else:
-                rendement_titre = rendement
-            valeur_projetee += quantite * prix_actuel * (1 + rendement_titre / 100)
+
+                if isinstance(rendement, dict):
+                    rendement_titre = rendement.get(symbole, rendement)
+                else:
+                    rendement_titre = rendement
+
+                # Ajustement de la valeur projetée en tenant compte de la volatilité
+                ajustement_volatilite = (1 + volatilite / 100)
+                valeur_projetee += quantite * prix_actuel * (1 + rendement_titre / 100) * ajustement_volatilite
 
         return valeur_projetee
     
