@@ -269,3 +269,31 @@ class Portefeuille:
             valeur_projetee += quantite * prix_actuel * (1 + rendement_titre / 100)
 
         return valeur_projetee
+    
+    def lister(self, date_evaluation=None):
+        """
+        Liste les titres détenus dans le portefeuille à une date donnée.
+
+        Args:
+            date_evaluation (date, optional): La date pour laquelle les titres sont listés.
+                Par défaut, la date du jour.
+
+        Returns:
+            dict: Un dictionnaire où les clés sont les symboles des titres et les valeurs
+                sont les quantités d'actions détenues pour ces titres.
+        """
+        if date_evaluation is None:
+            date_evaluation = date.today()
+
+       
+        liste_actions = {}
+        for transaction in self.transactions:
+            if transaction['type'] in ['achat', 'vente'] and transaction['date'] <= date_evaluation:
+                symbole = transaction['symbole']
+                quantite = transaction['quantite']
+                # Ajouter ou mettre à jour le symbole dans la liste
+                if symbole not in liste_actions:
+                    liste_actions[symbole] = quantite
+                else:
+                    liste_actions[symbole] += quantite
+        return liste_actions
